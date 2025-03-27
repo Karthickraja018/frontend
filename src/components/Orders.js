@@ -37,55 +37,25 @@ const Orders = () => {
   return (
     <div className="orders-container">
       <h2>Your Orders</h2>
-      
       {orders.length === 0 ? (
-        <div className="no-orders">
-          <p>You haven't placed any orders yet.</p>
-          <Link to="/products" className="shop-now-btn">Shop Now</Link>
-        </div>
+        <p>No orders found.</p>
       ) : (
         <div className="orders-list">
           {orders.map((order) => (
             <div key={order.id} className="order-card">
               <div className="order-header">
-                <div>
-                  <h3>Order #{order.id}</h3>
-                  <p className="order-date">Placed on {formatDate(order.created_at)}</p>
-                </div>
-                <div className="order-status">
-                  <span className={`status-badge ${order.status.toLowerCase()}`}>
-                    {order.status}
-                  </span>
-                </div>
+                <h3>Order #{order.id}</h3>
+                <p>Date: {formatDate(order.created_at)}</p>
               </div>
-              
-              <div className="order-items">
-                {order.items.map((item) => (
-                  <div key={item.id} className="order-item">
-                    <div className="item-image">
-                      <img 
-                        src={item.image || 'https://picsum.photos/50/50?random=' + item.id} 
-                        alt={item.name} 
-                      />
-                    </div>
-                    <div className="item-details">
-                      <h4>{item.name}</h4>
-                      <p>Quantity: {item.quantity}</p>
-                      <p>Price: ${item.price}</p>
-                    </div>
-                  </div>
-                ))}
+              <div className="order-details">
+                <p>Status: {order.status}</p>
+                <p>Total: ${Number(order.total).toFixed(2)}</p>
+                {/* OR alternatively: */}
+                {/* <p>Total: ${parseFloat(order.total).toFixed(2)}</p> */}
               </div>
-              
-              <div className="order-footer">
-                <div className="order-total">
-                  <span>Total:</span>
-                  <span>${order.total.toFixed(2)}</span>
-                </div>
-                <Link to={`/order/${order.id}`} className="view-details-btn">
-                  View Details
-                </Link>
-              </div>
+              <Link to={`/orders/${order.id}`} className="view-order-btn">
+                View Details
+              </Link>
             </div>
           ))}
         </div>
