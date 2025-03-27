@@ -37,14 +37,14 @@ const ProductDetail = () => {
     try {
       const token = localStorage.getItem('token');
       await axios.post(
-        'http://localhost:5000/api/cart/add',  // Use the /add endpoint which is already defined
-        { productId: id, quantity },  // Changed from product_id to productId to match backend
+        'http://localhost:5000/api/cart',  // Changed from /api/cart/add to /api/cart
+        { productId: id, quantity },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       navigate('/cart');
     } catch (err) {
-      setError('Failed to add product to cart. Please try again.');
-      console.error(err);
+      console.error('Error adding to cart:', err);
+      setError('Failed to add item to cart. Please try again.');
     }
   };
 
