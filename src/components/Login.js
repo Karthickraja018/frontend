@@ -26,15 +26,30 @@ const Login = ({ onLogin }) => {
     if (!validate()) return;
 
     try {
-      const res = await axios.post('http://localhost:5000/api/login', { email, password });
-      localStorage.setItem('token', res.data.token);
-      setMessage('Login successful!');
-      setErrors({});
-      setEmail('');
-      setPassword('');
-      onLogin(res.data.username);
+      const response = await axios.post('http://localhost:5000/api/login', 
+        { email, password },
+        { 
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
+        // Also store the userId for reference
+        localStorage.setItem('userId', response.data.userId);
+        setMessage('Login successful!');
+        setErrors({});
+        setEmail('');
+        setPassword('');
+        onLogin(response.data.username);
+      } else {
+        setMessage('Login failed: Invalid response from server');
+      }
     } catch (err) {
-      setMessage('Login failed. Check your credentials.');
+      console.error('Login error:', err.response?.data || err.message);
+      setMessage(err.response?.data?.error || 'Login failed. Please check your credentials.');
     }
   };
 
@@ -62,7 +77,7 @@ const Login = ({ onLogin }) => {
         </div>
         <button type="submit">Login</button>
       </form>
-      <p>{message}</p>
+      {message && <p className={message.includes('successful') ? 'success' : 'error'}>{message}</p>}
       <Link to="/forgot-password">Forgot Password?</Link>
     </div>
   );

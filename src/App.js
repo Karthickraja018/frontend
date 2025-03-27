@@ -1,11 +1,21 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Login from './components/Login';
 import Register from './components/Register';
 import ForgotPassword from './components/ForgotPassword';
 import ResetPassword from './components/ResetPassword';
 import Dashboard from './components/Dashboard';
+import Home from './components/Home';
+import ProductList from './components/ProductList';
+import ProductDetail from './components/ProductDetail';
+import Cart from './components/Cart';
+import Checkout from './components/Checkout';
+import Orders from './components/Orders';
+import OrderDetail from './components/OrderDetail';
+import Profile from './components/Profile';
+import NavBar from './components/NavBar';
 import './App.css';
+import './components/styles.css';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
@@ -16,7 +26,9 @@ function App() {
     setUsername(username);
   };
 
-  const handleRegister = () => {};
+  const handleRegister = () => {
+    setIsLoggedIn(true);
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -24,34 +36,61 @@ function App() {
     setUsername('');
   };
 
+  // Protected route component
+  const ProtectedRoute = ({ children }) => {
+    if (!isLoggedIn) {
+      return <Navigate to="/login" replace />;
+    }
+    return children;
+  };
+
   return (
     <Router>
       <div className="App">
-        <h1>E-Commerce Auth</h1>
-        {isLoggedIn && <button onClick={handleLogout}>Logout</button>}
+        <NavBar isLoggedIn={isLoggedIn} onLogout={handleLogout} />
+        
         <Routes>
-          {!isLoggedIn ? (
-            <>
-              <Route
-                path="/"
-                element={<Login onLogin={handleLogin} />}
-              />
-              <Route
-                path="/register"
-                element={<Register onRegister={handleRegister} />}
-              />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route path="/reset-password" element={<ResetPassword />} />
-            </>
-          ) : (
-            <Route path="/" element={<Dashboard username={username} />} />
-          )}
+          {/* Public Routes */}
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login onLogin={handleLogin} />} />
+          <Route path="/register" element={<Register onRegister={handleRegister} />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/products" element={<ProductList />} /> {/* Make this public */}
+          <Route path="/product/:id" element={<ProductDetail />} /> {/* Make this public */}
+          
+          {/* Protected Routes */}
+          <Route path="/dashboard" element={
+            <ProtectedRoute>
+              <Dashboard username={username} />
+            </ProtectedRoute>
+          } />
+          <Route path="/cart" element={
+            <ProtectedRoute>
+              <Cart />
+            </ProtectedRoute>
+          } />
+          <Route path="/checkout" element={
+            <ProtectedRoute>
+              <Checkout />
+            </ProtectedRoute>
+          } />
+          <Route path="/orders" element={
+            <ProtectedRoute>
+              <Orders />
+            </ProtectedRoute>
+          } />
+          <Route path="/order/:id" element={
+            <ProtectedRoute>
+              <OrderDetail />
+            </ProtectedRoute>
+          } />
+          <Route path="/profile" element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          } />
         </Routes>
-        {!isLoggedIn && (
-          <nav>
-            <Link to="/">Login</Link> | <Link to="/register">Register</Link>
-          </nav>
-        )}
       </div>
     </Router>
   );
