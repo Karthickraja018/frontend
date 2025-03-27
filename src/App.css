@@ -1,13 +1,13 @@
 .App {
   text-align: center;
-  max-width: 600px;
+  max-width: 800px;
   margin: 0 auto;
   padding: 20px;
 }
 form {
   margin: 20px 0;
 }
-input {
+input, textarea {
   display: block;
   margin: 10px auto;
   padding: 5px;
@@ -39,4 +39,19 @@ a:hover {
   color: red;
   font-size: 0.9em;
   margin: 5px 0;
+}
+.profile {
+  margin: 20px 0;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+.products {
+  margin-top: 20px;
+}
+.product {
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
 }
